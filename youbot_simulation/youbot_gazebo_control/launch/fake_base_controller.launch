@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+  <rosparam file="$(find youbot_gazebo_control)/config/fake_base_controller.yaml" command="load"/> 
+
+  <node pkg="controller_manager" type="spawner" name="fake_base_controller_spawner" args="fake_base_trajectory_position_controller" respawn="false" output="screen" />
+
+</launch>

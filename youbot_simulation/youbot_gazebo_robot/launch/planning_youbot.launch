@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<launch>
+
+	<!-- GDB functionality -->
+	<arg name="debug" default="false" />
+  	<arg unless="$(arg debug)" name="launch_prefix" value="" />
+  	<arg     if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+  	<arg name="group_ns" default="plan"/>
+
+  	<group ns="$(arg group_ns)">
+		<param name="robot_description" command="$(find xacro)/xacro.py $(find youbot_description)/robots/youbot_planning_bot.urdf.xacro" />
+
+		<!-- Load hardware interface -->
+	    <node name="base_hardware_interface" pkg="ros_control_boilerplate" type="base_hw_main"
+	          output="screen" launch-prefix="$(arg launch_prefix)"/>
+
+	    <!-- Load controller settings -->
+	    <rosparam file="$(find ros_control_boilerplate)config/base_vel_controllers.yaml" command="load"/>
+
+	    <!-- Load controller manager -->
+	    <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false"
+		  output="screen" args="spawn joint_state_controller velocity_trajectory_controller">
+		</node>
+
+		 <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+	    	<param name="publish_frequency" type="double" value="100.0" />
+	  	</node>
+	</group>
+
+<!-- 	<group ns="planning">  
+		<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+	    	<param name="publish_frequency" type="double" value="100.0" />
+	  	</node>
+  	</group>
+ -->
+
+
+   <!--  <include file="$(find youbot_moveit)/launch/move_group.launch" />
+    
+    <include if="$(arg rviz)" file="$(find iiwa_moveit)/launch/moveit_rviz.launch">
+        <arg name="config" value="true"/>
+    </include>
+ -->
+</launch>

@@ -1,0 +1,45 @@
+#fake_base
+
+  #Publish all joint states---------------------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+
+  # Forward velocity Controllers ---------------------------------------
+  fake_base_x_vel_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: fake_base_joint_x
+
+  fake_base_y_vel_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: fake_base_joint_y
+
+  fake_base_theta_vel_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: fake_base_joint_theta
+
+
+
+  # Forward position Controllers ---------------------------------------
+  fake_base_x_pos_controller:
+    type: position_controllers/JointPositionController
+    joint: fake_base_joint_x
+
+  fake_base_y_pos_controller:
+    type: position_controllers/JointPositionController
+    joint: fake_base_joint_y
+
+  fake_base_theta_pos_controller:
+    type: position_controllers/JointPositionController
+    joint: fake_base_joint_theta
+
+
+  # Forward Position Trajectory Controller ------------------------------
+  fake_base_trajectory_position_controller:
+    type: position_controllers/JointTrajectoryController
+    joints:
+      - fake_base_joint_x
+      - fake_base_joint_y
+      - fake_base_joint_theta
+

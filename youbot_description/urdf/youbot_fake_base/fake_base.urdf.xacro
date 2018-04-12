@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller" 
+xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Import all Gazebo-customization elements, including Gazebo colors -->
+  <xacro:include filename="$(find youbot_description)/urdf/youbot_fake_base/fake_base.gazebo.xacro" />
+  <!-- Import Transmissions -->
+  <xacro:include filename="$(find youbot_description)/urdf/youbot_fake_base/fake_base.transmission.xacro" />
+
+  <property name="max_force" value="1.0"/>
+  <property name="max_torque" value="1.0"/>
+  <property name="max_lin_velocity" value="1.0"/>
+  <property name="max_rot_velocity" value="1.0"/>
+  <property name="min_position" value="-100.0"/>
+  <property name="max_position" value="100.0"/>
+
+<!--   <xacro:macro name="omnirob_visual" params="index color">
+     <visual>
+       <origin xyz="0.0 0.0 0.125" rpy="0 0 0"/>
+       <geometry>
+          <mesh filename="package://miiwa_description/meshes/robot/omnirob/${index}.stl" />
+       </geometry>
+       <material name="${color}"/>
+     </visual>
+  </xacro:macro> -->
+
+  <xacro:macro name="fake_base" params="parent_link name hardware_interface">
+    <joint name="${name}_fixed_base_joint" type="fixed">
+       <child link="${name}_virtual_link_0" />
+       <parent link="${parent_link}"/>
+       <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    </joint>
+ 
+    <link name="${name}_virtual_link_0">
+      <visual>
+        <origin xyz="0 0 0.5" rpy="0 0 0" />
+        <geometry>
+          <box size="0.001 0.001 0.001" />
+        </geometry>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0.1" rpy="0 0 0" />
+        <geometry>
+          <box size="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
+
+      <inertial>
+        <mass value="0.001" />
+        <inertia
+          ixx="1.0" ixy="0.0" ixz="0.0"
+          iyy="1.0" iyz="0.0"
+          izz="1.0" />
+        </inertial>
+    </link>
+    
+    <joint name="youbot_base/x" type="prismatic">
+       <origin xyz="0.0 0 0" rpy="0 0 0" />
+       <axis xyz="1 0 0"/>
+       <limit lower="${min_position}" upper="${max_position}" effort="${max_force}" velocity="${max_lin_velocity}"/>
+       <parent link="${name}_virtual_link_0"/>
+       <child link="${name}_virtual_link_1" />
+    </joint>    
+
+    <link name="${name}_virtual_link_1">
+      <visual>
+        <origin xyz="0 0 0.1" rpy="0 0 0" />
+        <geometry>
+          <box size="0.001 0.001 0.001" />
+        </geometry>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0.1" rpy="0 0 0" />
+        <geometry>
+          <box size="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
+
+      <inertial>
+        <mass value="0.001" />
+        <inertia
+          ixx="1.0" ixy="0.0" ixz="0.0"
+          iyy="1.0" iyz="0.0"
+          izz="1.0" />
+        </inertial>
+    </link>
+
+    <joint name="youbot_base/y" type="prismatic">
+       <origin xyz="0 0 0" rpy="0 0 0" />
+       <axis xyz="0 1 0"/>
+       <limit lower="${min_position}" upper="${max_position}" effort="${max_force}" velocity="${max_lin_velocity}"/>
+       <parent link="${name}_virtual_link_1"/>
+       <child link="${name}_virtual_link_2" />
+    </joint>    
+
+    <link name="${name}_virtual_link_2">
+      <visual>
+        <origin xyz="0 0 0.1" rpy="0 0 0" />
+        <geometry>
+          <box size="0.001 0.001 0.001" />
+        </geometry>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0.1" rpy="0 0 0" />
+        <geometry>
+          <box size="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
+
+      <inertial>
+        <mass value="0.001" />
+        <inertia
+          ixx="1.0" ixy="0.0" ixz="0.0"
+          iyy="1.0" iyz="0.0"
+          izz="1.0" />
+      </inertial>
+    </link>
+
+    <joint name="youbot_base/theta" type="continuous">
+       <origin xyz="0 0 0" rpy="0 0 0" />
+       <axis xyz="0 0 1"/>
+       <limit effort="${max_torque}" velocity="${max_rot_velocity}" upper="${-1.0 * pi}" lower="${pi}"/>
+       <parent link="${name}_virtual_link_2"/>
+       <child link="${name}_link" />
+    </joint> 
+    
+
+    <link name="${name}_link" />
+
+
+    <!--Extensions -->
+    <xacro:fake_base_gazebo name="${name}" parent_link="${parent_link}"/>
+    <xacro:fake_base_transmission name="${name}" hardware_interface="${hardware_interface}"/>
+
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <rosparam file="$(find youbot_gazebo_control)/config/joint_state_controller.yaml" command="load"/> 
+
+  <node pkg="controller_manager" type="spawner" name="joint_state_controller_spawner" args="joint_state_controller"  respawn="false" output="screen">
+		<remap from="joint_states" to="lan/joint_states" />
+  </node>
+
+</launch>
